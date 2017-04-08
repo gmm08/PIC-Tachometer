@@ -10,11 +10,9 @@
 #pragma config CP = OFF         // Flash Program Memory Code Protection bit (Code protection off)
 
 
+
 #include <xc.h>
 #include "lcd.h"
-
-#define _XTAL_FREQ 4000000
-
 
 
 
@@ -49,6 +47,8 @@ void main(void) {
     CCP1CON = 0x05;
     CMCON = 0x07;
     
+    LCD_ini();
+    
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
     PIR1bits.CCP1IF = 0;
@@ -56,6 +56,7 @@ void main(void) {
     PIR1bits.TMR1IF = 0;
     PIE1bits.TMR1IE = 1;
     
+    LCD_write(1,"caca            ");
     
     while(1){
         

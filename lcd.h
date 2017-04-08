@@ -18,10 +18,11 @@ char LCD_buff;
 //FUNCIONS
 void LCD_RS(char);
 void LCD_RW(char);
-void LCD_EN(char);
+void LCD_EN();
 void LCD_data(unsigned char);
 void LCD_ini();
-void LCD_out(unsigned char);
+void LCD_write(char, char[]);
+void LCD_out(char, char);
 
     
 

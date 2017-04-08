@@ -1,4 +1,5 @@
 
+#define _XTAL_FREQ 4000000
 #include <xc.h>
 #include "lcd.h"
 
@@ -21,10 +22,16 @@ void LCD_RW(char x){
     
 }
 
-void LCD_EN(char x){
+void LCD_EN(){
     //PORTA bit 7
-    if(x) PORTA = LCD_buff;
-    PORTAbits.RA7 = x;
+    
+    PORTA = LCD_buff;
+    
+    PORTAbits.RA7 = 1;
+    
+    __delay_ms(10);
+    
+    PORTAbits.RA7 = 0;
     
     return;
     
@@ -41,23 +48,56 @@ void LCD_data(unsigned char nib){
 }
 
 //Outputs a byte of data to the LCD, regsel = 1 for data, 0 for command
-void LCD_out(char regsel, unsigned char data){
+void LCD_out(char regsel, char data){
     
     LCD_RW(0);              //Write to lcd
     LCD_RS(regsel);         //Select between data or command
     
     LCD_data(data >> 4);
-    LCD_EN(1);
-    LCD_EN(0);
+    LCD_EN();
     
     LCD_data(data);
-    LCD_EN(1);
-    LCD_EN(0);
+    LCD_EN();
+    
+}
+
+void LCD_write(char line, char text[16]){
+    
+    LCD_out(0, 0x80+16*line);
+    
+    for(char i=0; i<16; i++){
+        LCD_out(1, text[i]);
+        LCD_out(0, 0x14);
+    }
+    
+    
 }
 
 void LCD_ini(){
     
+    LCD_RW(0);              //Write to lcd
+    LCD_RS(0);              //Command
     
-
+    __delay_ms(15);
+    
+    LCD_data(0x03);
+    LCD_EN();
+    __delay_ms(5);
+    
+    LCD_data(0x03);
+    LCD_EN();
+    __delay_us(160);
+    
+    LCD_data(0x02);
+    LCD_EN();
+    __delay_us(160);
+    
+    LCD_out(0,0x28);
+    LCD_out(0,0x06);
+    LCD_out(0,0x0c);
+    LCD_out(0,0x80);
+    
+    
+    
     
 }
